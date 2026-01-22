@@ -158,6 +158,36 @@ export type PositionSafeStyle = PositionExpandedStyle & {
 
 export type PositioningStyle = PositionShorthandStyle & PositionExpandedStyle;
 
+// Background
+
+export type BackgroundSizeKeyword = 'cover' | 'contain' | 'auto';
+export type BackgroundSize = BackgroundSizeKeyword | string;
+
+export type BackgroundRepeat = 'repeat' | 'no-repeat' | 'repeat-x' | 'repeat-y';
+
+export type BackgroundShorthandStyle = {
+  backgroundPosition?: number | string;
+};
+
+export type BackgroundExpandedStyle = {
+  backgroundImage?: string;
+  backgroundSize?: BackgroundSize;
+  backgroundPositionX?: number | string;
+  backgroundPositionY?: number | string;
+  backgroundRepeat?: BackgroundRepeat;
+};
+
+export type BackgroundSafeStyle = {
+  backgroundImage?: string;
+  backgroundSize?: BackgroundSize;
+  backgroundPositionX?: number | string;
+  backgroundPositionY?: number | string;
+  backgroundRepeat?: BackgroundRepeat;
+};
+
+export type BackgroundStyle = BackgroundShorthandStyle &
+  BackgroundExpandedStyle;
+
 // Transform
 
 export type ScaleTransform = {
@@ -432,7 +462,8 @@ export type SvgSafeStyle = SvgStyle & {
 
 // Global
 
-type BaseStyle = BorderStyle &
+type BaseStyle = BackgroundStyle &
+  BorderStyle &
   ColorStyle &
   DimensionStyle &
   FlexboxStyle &
@@ -453,7 +484,8 @@ export type Style = BaseStyle & MediaQueryStyle;
 
 export type StyleKey = keyof BaseStyle;
 
-export type ExpandedStyle = BorderExpandedStyle &
+export type ExpandedStyle = BackgroundExpandedStyle &
+  BorderExpandedStyle &
   ColorExpandedStyle &
   DimensionExpandedStyle &
   FlexboxExpandedStyle &
@@ -466,7 +498,8 @@ export type ExpandedStyle = BorderExpandedStyle &
   TransformExpandedStyle &
   SvgExpandedStyle;
 
-export type SafeStyle = BorderSafeStyle &
+export type SafeStyle = BackgroundSafeStyle &
+  BorderSafeStyle &
   ColorSafeStyle &
   DimensionSafeStyle &
   FlexboxSafeStyle &

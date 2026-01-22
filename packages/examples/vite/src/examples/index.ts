@@ -1,3 +1,4 @@
+import backgroundImage from './background-image';
 import duplicatedImages from './duplicated-images';
 import ellipsis from './ellipsis';
 import emoji from './emoji';
@@ -22,6 +23,7 @@ import forms from './forms';
 import softHyphens from './soft-hyphens';
 
 const EXAMPLES = [
+  backgroundImage,
   duplicatedImages,
   ellipsis,
   emoji,

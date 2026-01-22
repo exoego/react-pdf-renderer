@@ -1,3 +1,4 @@
+import backgroundHandlers from './background';
 import borderHandlers from './borders';
 import colorHandlers from './colors';
 import dimensionHandlers from './dimensions';
@@ -20,6 +21,7 @@ type Handler = (
 ) => SafeStyle;
 
 const shorthands: Partial<Record<StyleKey, Handler>> = {
+  ...backgroundHandlers,
   ...borderHandlers,
   ...colorHandlers,
   ...dimensionHandlers,

@@ -75,7 +75,7 @@ const renderNode = (ctx: Context, node: SafeNode, options: RenderOptions) => {
   if (overflowHidden) clipNode(ctx, node);
 
   transform(ctx, node);
-  renderBackground(ctx, node);
+  renderBackground(ctx, node, options);
   renderBorders(ctx, node);
 
   const renderFn = renderFns[node.type];

@@ -14,6 +14,7 @@ export { default as omit } from './omit.js';
 export { default as pick } from './pick.js';
 export { default as repeat } from './repeat.js';
 export { default as reverse } from './reverse.js';
+export { default as splitByComma } from './splitByComma.js';
 export { default as upperFirst } from './upperFirst.js';
 export { default as without } from './without.js';
 export { default as parseFloat } from './parseFloat.js';

@@ -1,3 +1,4 @@
+export * from './background';
 export * from './base';
 export * from './canvas';
 export * from './circle';

@@ -1,4 +1,5 @@
 import { SafeStyle, Style } from '@react-pdf/stylesheet';
+import { Image } from '@react-pdf/image';
 import * as P from '@react-pdf/primitives';
 import { YogaNode } from 'yoga-layout/load';
 
@@ -31,6 +32,7 @@ export type LinkNode = {
 
 export type SafeLinkNode = Omit<LinkNode, 'style' | 'children'> & {
   style: SafeStyle;
+  backgroundImage?: Image;
   children?: (
     | SafeViewNode
     | SafeImageNode

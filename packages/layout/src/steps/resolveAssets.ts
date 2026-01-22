@@ -4,6 +4,7 @@ import { castArray } from '@react-pdf/fns';
 
 import fetchEmojis from '../text/emoji';
 import fetchImage from '../image/fetchImage';
+import fetchBackgroundImage from '../image/fetchBackgroundImage';
 import { SafeImageNode, SafeNode } from '../types';
 
 const isImage = (node: SafeNode): node is SafeImageNode =>
@@ -26,6 +27,10 @@ const fetchAssets = (fontStore: FontStore, node: SafeNode) => {
 
     if (isImage(n)) {
       promises.push(fetchImage(n));
+    }
+
+    if (n.style?.backgroundImage) {
+      promises.push(fetchBackgroundImage(n));
     }
 
     if (fontStore && n.style?.fontFamily) {

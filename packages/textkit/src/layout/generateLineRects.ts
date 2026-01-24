@@ -31,8 +31,43 @@ const getLineFragments = (rect: Rect, excludeRects: Rect[]) => {
   return fragments;
 };
 
+/**
+ * Generate column rectangles for multi-column layout
+ *
+ * @param rect - Base rectangle
+ * @param columnCount - Number of columns
+ * @param columnGap - Gap between columns
+ * @returns Array of column rectangles
+ */
+const generateColumnRects = (
+  rect: Rect,
+  columnCount: number,
+  columnGap: number,
+): Rect[] => {
+  const columnWidth =
+    (rect.width - columnGap * (columnCount - 1)) / columnCount;
+
+  const columnRects: Rect[] = [];
+
+  for (let i = 0; i < columnCount; i += 1) {
+    columnRects.push({
+      x: rect.x + i * (columnWidth + columnGap),
+      y: rect.y,
+      width: columnWidth,
+      height: rect.height,
+    });
+  }
+
+  return columnRects;
+};
+
 const generateLineRects = (container: Container, height: number) => {
-  const { excludeRects, ...rect } = container;
+  const { excludeRects, columnCount, columnGap, ...rect } = container;
+
+  // Handle multi-column layout
+  if (columnCount && columnCount > 1) {
+    return generateColumnRects(rect, columnCount, columnGap || 0);
+  }
 
   if (!excludeRects) return [rect];
 

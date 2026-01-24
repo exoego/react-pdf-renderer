@@ -1,3 +1,5 @@
+import { isWhiteSpaceOnly, calculateLinesPerColumn } from '@react-pdf/textkit';
+
 import lineIndexAtHeight from './lineIndexAtHeight';
 import heightAtLineIndex from './heightAtLineIndex';
 import { SafeTextNode } from '../types';
@@ -32,16 +34,144 @@ const getLineBreak = (node: SafeTextNode, height: number) => {
   return slicedLine;
 };
 
-// Also receives contentArea in case it's needed
+/**
+ * Recalculate line positions for multi-column layout after split.
+ * Lines start from Y=0 and are distributed across columns with balanced distribution.
+ */
+function recalculateMultiColumnLines(
+  lines: SafeTextNode['lines'],
+  columnCount: number,
+  columnGap: number,
+  containerWidth: number,
+): SafeTextNode['lines'] {
+  if (!lines || lines.length === 0) return lines;
+
+  const columnWidth =
+    (containerWidth - columnGap * (columnCount - 1)) / columnCount;
+
+  const linesPerColumn = calculateLinesPerColumn(lines.length, columnCount);
+
+  let columnIndex = 0;
+  let linesInCurrentColumn = 0;
+  let currentColumnX = 0;
+  let currentY = 0;
+  let isColumnStart = true;
+
+  return lines.map((line) => {
+    const height = line.box?.height || 0;
+
+    // Move to next column if current is full
+    if (
+      linesInCurrentColumn >= linesPerColumn[columnIndex] &&
+      columnIndex < columnCount - 1
+    ) {
+      columnIndex += 1;
+      linesInCurrentColumn = 0;
+      currentColumnX = columnIndex * (columnWidth + columnGap);
+      currentY = 0;
+      isColumnStart = true;
+    }
+
+    // Collapse empty lines at the start of a column
+    if (isColumnStart && isWhiteSpaceOnly(line)) {
+      linesInCurrentColumn += 1;
+      return {
+        ...line,
+        box: { ...line.box, x: currentColumnX, y: currentY, height: 0 },
+      };
+    }
+
+    isColumnStart = false;
+
+    const newLine = {
+      ...line,
+      box: { ...line.box, x: currentColumnX, y: currentY },
+    };
+
+    currentY += height;
+    linesInCurrentColumn += 1;
+
+    return newLine;
+  });
+}
+
+/**
+ * Calculate the height of a set of lines after multi-column distribution.
+ */
+function calculateDistributedHeight(lines: SafeTextNode['lines']): number {
+  if (!lines || lines.length === 0) return 0;
+
+  const minY = Math.min(...lines.map((line) => line.box.y));
+  const maxBottom = Math.max(
+    ...lines.map((line) => line.box.y + line.box.height),
+  );
+
+  return maxBottom - minY;
+}
+
+/**
+ * Resolve the column gap value, defaulting to 1em (fontSize) per CSS spec.
+ */
+function resolveColumnGap(node: SafeTextNode): number {
+  const columnCount = node.style?.columnCount || 1;
+  if (columnCount <= 1) return 0;
+
+  const styleColumnGap = node.style?.columnGap;
+  if (styleColumnGap !== undefined && styleColumnGap !== null) {
+    return styleColumnGap;
+  }
+
+  const fontSize = node.style?.fontSize || 18;
+  return fontSize;
+}
+
+/**
+ * Split text node at the given height for pagination.
+ * Handles multi-column layout by recalculating line positions.
+ */
 const splitText = (node: SafeTextNode, height: number) => {
   const slicedLineIndex = getLineBreak(node, height);
   const currentHeight = heightAtLineIndex(node, slicedLineIndex);
   const nextHeight = node.box.height - currentHeight;
 
-  const current: SafeTextNode = Object.assign({}, node, {
+  const columnCount = node.style?.columnCount || 1;
+  const columnGap = resolveColumnGap(node);
+  const containerWidth = node.box?.width || 0;
+  const isMultiColumn = columnCount > 1;
+
+  // Process current page lines
+  let currentLines = node.lines.slice(0, slicedLineIndex);
+  let recalculatedCurrentHeight = currentHeight;
+
+  if (isMultiColumn && currentLines.length > 0) {
+    currentLines = recalculateMultiColumnLines(
+      currentLines,
+      columnCount,
+      columnGap,
+      containerWidth,
+    );
+    recalculatedCurrentHeight = calculateDistributedHeight(currentLines);
+  }
+
+  // Process next page lines
+  let nextLines = node.lines.slice(slicedLineIndex);
+  let recalculatedNextHeight = nextHeight;
+
+  if (isMultiColumn && nextLines.length > 0) {
+    nextLines = recalculateMultiColumnLines(
+      nextLines,
+      columnCount,
+      columnGap,
+      containerWidth,
+    );
+    recalculatedNextHeight = calculateDistributedHeight(nextLines);
+  }
+
+  const current: SafeTextNode = {
+    ...node,
     box: {
       ...node.box,
-      height: currentHeight,
+      height: recalculatedCurrentHeight,
       borderBottomWidth: 0,
     },
     style: {
@@ -52,14 +182,15 @@ const splitText = (node: SafeTextNode, height: number) => {
       borderBottomLeftRadius: 0,
       borderBottomRightRadius: 0,
     },
-    lines: node.lines.slice(0, slicedLineIndex),
-  });
+    lines: currentLines,
+  };
 
-  const next: SafeTextNode = Object.assign({}, node, {
+  const next: SafeTextNode = {
+    ...node,
     box: {
       ...node.box,
       top: 0,
-      height: nextHeight,
+      height: recalculatedNextHeight,
       borderTopWidth: 0,
     },
     style: {
@@ -70,8 +201,8 @@ const splitText = (node: SafeTextNode, height: number) => {
       borderTopLeftRadius: 0,
       borderTopRightRadius: 0,
     },
-    lines: node.lines.slice(slicedLineIndex),
-  });
+    lines: nextLines,
+  };
 
   return [current, next];
 };

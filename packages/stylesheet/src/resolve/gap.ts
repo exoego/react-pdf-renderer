@@ -9,8 +9,8 @@ const processGapShorthand = <K extends StyleKey>(
 ): GapSafeStyle => {
   const parts = `${value}`.split(' ');
 
-  const rowGap = transformUnit(container, parts[0]);
-  const columnGap = transformUnit(container, parts[1] || parts[0]);
+  const rowGap = transformUnit(container, parts[0]) as number;
+  const columnGap = transformUnit(container, parts[1] || parts[0]) as number;
 
   return { rowGap, columnGap };
 };

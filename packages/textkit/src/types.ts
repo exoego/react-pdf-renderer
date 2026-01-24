@@ -18,6 +18,8 @@ export type Container = Rect & {
   truncateMode?: 'ellipsis';
   maxLines?: number;
   excludeRects?: Rect[];
+  columnCount?: number;
+  columnGap?: number;
 };
 
 export type Glyph = FontkitGlyph;

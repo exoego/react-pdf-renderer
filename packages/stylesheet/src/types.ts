@@ -133,8 +133,8 @@ export type GapExpandedStyle = {
 };
 
 export type GapSafeStyle = {
-  rowGap?: number | string;
-  columnGap?: number | string;
+  rowGap?: number;
+  columnGap?: number;
 };
 
 export type GapStyle = GapShorthandStyle & GapExpandedStyle;
@@ -322,6 +322,8 @@ export type TextTransform =
 export type VerticalAlign = 'sub' | 'super';
 
 export type TextStyle = {
+  columnCount?: number | string;
+  columnGap?: number | string;
   direction?: 'ltr' | 'rtl';
   fontSize?: number | string;
   fontFamily?: string | string[];
@@ -343,6 +345,8 @@ export type TextStyle = {
 export type TextExpandedStyle = TextStyle;
 
 export type TextSafeStyle = TextExpandedStyle & {
+  columnCount?: number;
+  columnGap?: number;
   fontSize?: number;
   fontWeight?: number;
   letterSpacing?: number;

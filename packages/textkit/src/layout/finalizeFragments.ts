@@ -122,9 +122,14 @@ const finalizeBlock = (engines: Engines, options: LayoutOptions) => {
    * @returns Line
    */
   return (line: AttributedString, index: number, lines: AttributedString[]) => {
-    const isLastFragment = index === lines.length - 1;
+    const isLastLineInBlock = index === lines.length - 1;
+    // A line ending with newline is the last line of a paragraph
+    // (even in multi-column where all paragraphs are combined into one block)
+    const endsWithNewline = last(line.string) === '\n';
+    const isLastLineOfParagraph = isLastLineInBlock || endsWithNewline;
+
     const style = line.runs?.[0]?.attributes || {};
-    const align = isLastFragment ? style.alignLastLine : style.align;
+    const align = isLastLineOfParagraph ? style.alignLastLine : style.align;
 
     return compose(
       finalizeLine,

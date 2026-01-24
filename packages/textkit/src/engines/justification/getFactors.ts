@@ -99,8 +99,12 @@ const getFactors = (
   const getFactor = factor(direction, options);
 
   const factors = line.runs.reduce((acc: Factor[], run) => {
+    if (!run.glyphs || run.glyphs.length === 0) return acc;
     return acc.concat(getFactor(run.glyphs));
   }, []);
+
+  // Guard against empty factors array
+  if (factors.length === 0) return factors;
 
   factors[0].before = 0;
   factors[factors.length - 1].after = 0;

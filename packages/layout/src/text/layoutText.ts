@@ -28,6 +28,12 @@ const getMaxLines = (node) => node.style?.maxLines;
 
 const getTextOverflow = (node) => node.style?.textOverflow;
 
+const getColumnCount = (node) => node.style?.columnCount;
+
+const getColumnGap = (node) => node.style?.columnGap;
+
+const getFontSize = (node) => node.style?.fontSize || 18;
+
 /**
  * Get layout container for specific text node
  *
@@ -39,6 +45,11 @@ const getTextOverflow = (node) => node.style?.textOverflow;
 const getContainer = (width, height, node) => {
   const maxLines = getMaxLines(node);
   const textOverflow = getTextOverflow(node);
+  const columnCount = getColumnCount(node);
+  const columnGap = getColumnGap(node);
+
+  // Default columnGap is 1em (fontSize) per CSS spec
+  const resolvedColumnGap = columnGap ?? getFontSize(node);
 
   return {
     x: 0,
@@ -47,6 +58,8 @@ const getContainer = (width, height, node) => {
     maxLines,
     height: height || Infinity,
     truncateMode: textOverflow,
+    columnCount: columnCount || 1,
+    columnGap: columnCount > 1 ? resolvedColumnGap : 0,
   };
 };
 

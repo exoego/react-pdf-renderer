@@ -7,6 +7,7 @@ import scriptItemizer from './engines/scriptItemizer';
 import wordHyphenation from './engines/wordHyphenation';
 import fontSubstitution from './engines/fontSubstitution';
 import fromFragments from './attributedString/fromFragments';
+import { isWhiteSpaceOnly, calculateLinesPerColumn } from './layout/typesetter';
 
 export {
   bidi,
@@ -17,6 +18,8 @@ export {
   wordHyphenation,
   fontSubstitution,
   fromFragments,
+  isWhiteSpaceOnly,
+  calculateLinesPerColumn,
 };
 
 export * from './types';

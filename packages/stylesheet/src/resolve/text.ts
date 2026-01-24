@@ -78,6 +78,8 @@ const processLineHeight = <K extends StyleKey>(
 };
 
 const handlers = {
+  columnCount: processNumberValue<'columnCount'>,
+  columnGap: processUnitValue<'columnGap'>,
   direction: processNoopValue<'direction'>,
   fontFamily: processNoopValue<'fontFamily'>,
   fontSize: processUnitValue<'fontSize'>,

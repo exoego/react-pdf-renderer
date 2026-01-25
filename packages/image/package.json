@@ -23,8 +23,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@react-pdf/png-js": "^3.0.0",
-    "jay-peg": "^1.1.1"
+    "jay-peg": "^1.1.1",
+    "pngjs": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/pngjs": "^6.0.5"
   },
   "files": [
     "lib"

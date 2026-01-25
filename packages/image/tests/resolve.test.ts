@@ -15,6 +15,11 @@ const localJPGImage = fs.readFileSync(jpgLogalPath);
 const pngLogalPath = path.join(__dirname, './assets/test.png');
 const localPNGImage = fs.readFileSync(pngLogalPath);
 
+// Adam7 interlaced PNG from PngSuite (http://www.schaik.com/pngsuite/)
+// License: http://www.schaik.com/pngsuite/PngSuite.LICENSE
+const adam7PngPath = path.join(__dirname, './assets/adam7-interlaced.png');
+const adam7PNGImage = fs.readFileSync(adam7PngPath);
+
 describe('image resolveImage', () => {
   beforeEach(() => {
     fetchMock.resetMocks();
@@ -173,6 +178,14 @@ describe('image resolveImage', () => {
     expect(image?.data).toBeTruthy();
     expect(image?.width).toBeGreaterThan(0);
     expect(image?.height).toBeGreaterThan(0);
+  });
+
+  test('Should render an Adam7 interlaced png image', async () => {
+    const image = await resolveImage(adam7PNGImage);
+
+    expect(image?.data).toBeTruthy();
+    expect(image?.width).toBe(32);
+    expect(image?.height).toBe(32);
   });
 
   test('Should not cache previously loaded remote images if flag false', async () => {

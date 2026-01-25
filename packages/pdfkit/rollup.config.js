@@ -21,7 +21,7 @@ const getExternal = ({ browser }) => [
   ...Object.keys(pkg.dependencies).filter(
     (dep) =>
       !browser ||
-      !['vite-compatible-readable-stream', 'browserify-zlib'].includes(dep)
+      !['vite-compatible-readable-stream', 'browserify-zlib', 'pngjs'].includes(dep)
   ),
   /\/node_modules\/pako\//,
   /crypto-js/,
@@ -46,7 +46,8 @@ const getPlugins = ({ browser }) => [
               replacement: 'pako/lib/zlib/constants.js'
             },
             { find: 'stream', replacement: 'vite-compatible-readable-stream' },
-            { find: 'zlib', replacement: 'browserify-zlib' }
+            { find: 'zlib', replacement: 'browserify-zlib' },
+            { find: 'pngjs', replacement: 'pngjs/browser.js' }
           ]
         }),
         commonjs(),

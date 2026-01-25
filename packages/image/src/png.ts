@@ -1,4 +1,4 @@
-import _PNG from '@react-pdf/png-js';
+import { PNG as PngjsPNG } from 'pngjs';
 
 import { Image } from './types';
 
@@ -9,7 +9,7 @@ class PNG implements Image {
   format: 'png';
 
   constructor(data: Buffer) {
-    const png = new _PNG(data);
+    const png = PngjsPNG.sync.read(data);
 
     this.data = data;
     this.width = png.width;

@@ -5,6 +5,7 @@ import fontFamilyFallback from './font-family-fallback';
 import fontWeight from './font-weight';
 import fractals from './fractals';
 import goTo from './go-to';
+import hyphensControl from './hyphens-control';
 import imageStressTest from './image-stress-test';
 import JpgOrientation from './jpg-orientation';
 import knobs from './knobs';
@@ -29,6 +30,7 @@ const EXAMPLES = [
   fontWeight,
   fractals,
   goTo,
+  hyphensControl,
   JpgOrientation,
   knobs,
   link,
